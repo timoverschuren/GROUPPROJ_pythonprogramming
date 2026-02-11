@@ -42,7 +42,7 @@ Ocean.habitat = Habitat(temperature = 10, humidity = 100, elevation = 0, terrest
 Forest.habitat = Habitat(temperature = 15, humidity = 40, elevation = 100, terrestrial = 75, aqeous=25)
 Mountains.habitat = Habitat(temperature = -10, humidity = 60, elevation = 3000, terrestrial = 90, aqeous=10)
 Lake.habitat = Habitat(temperature = 10, humidity = 100, elevation = 0, terrestrial = 0, aqeous=100)
-shore.habitat = Habitat(temperature = 15, humidity = 80, elevation = 0, terrestrial = 40, aqeous=60)
+Shore.habitat = Habitat(temperature = 15, humidity = 80, elevation = 0, terrestrial = 40, aqeous=60)
 
 
 caretaker_list = []

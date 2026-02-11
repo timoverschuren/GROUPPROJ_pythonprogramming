@@ -13,16 +13,16 @@ class Animal: #parent class
 
 
 class terrestial(Animal): #subclass 1):
-    def __init__(self, domain, kingdom, phylum, clas, order, family, genus, species, lungs, fur, colour, limbs):
-        super().__init__(domain, kingdom, phylum, clas, order, family, genus, species)
+    def __init__(self, species, xp, health, lungs, fur, colour, limbs):
+        super().__init__(species, xp, health)
         self.lungs = lungs
         self.fur = fur
         self.colour = colour
         self.limbs = limbs
 
 class aquatic(Animal): #subclass 2)
-    def __init__(self, domain, kingdom, phylum, clas, order, family, genus, species, gills, fins, scales):
-        super().__init__(domain, kingdom, phylum, clas, order, family, genus, species)
+    def __init__(self, species, xp, health, gills, fins, scales):
+        super().__init__(species, xp, health)
         self.gills = gills
         self.fins = fins
         self.scales = scales
@@ -34,7 +34,7 @@ class Caretakers:
         self.specialty = specialty
 
 class Habitat:
-    def __init__(self, temperature, humidity, elevation, terrestial, aqeous)
+    def __init__(self, temperature, humidity, elevation, terrestial, aqeous):
         self.temperature = temperature
         self.humidity = humidity
         self.elevation = elevation

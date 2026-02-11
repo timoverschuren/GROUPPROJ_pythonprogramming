@@ -91,5 +91,5 @@ def iterate_generation(self):
     print(f"Generation {generation_counter} has begun!")
     if len(species_list) == 0:
         print("Youve lost! No species left to evolve.")
-        
         return
+##change

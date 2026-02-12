@@ -1,29 +1,33 @@
-class Animal: #parent class
-    def __init__(self, species, xp, health):
+class Animal:  # parent class
+    def __init__(self, species, health):
         self.species = species
-        self.xp = xp
         self.health = health
 
-class terrestial(Animal): #subclass 1):
-    def __init__(self, species, xp, health, lungs, fur, colour, limbs):
-        super().__init__(species, xp, health)
+
+class terrestial(Animal):  # subclass 1):
+    def __init__(self, species, health, lungs, fur, colour, limbs):
+        super().__init__(species, health)
         self.lungs = lungs
         self.fur = fur
         self.colour = colour
         self.limbs = limbs
 
-class aquatic(Animal): #subclass 2)
-    def __init__(self, species, xp, health, gills, fins, scales):
-        super().__init__(species, xp, health)
+
+class aquatic(Animal):  # subclass 2)
+    def __init__(self, species, health, gills, fins, scales):
+        super().__init__(species, health)
         self.gills = gills
         self.fins = fins
         self.scales = scales
+
 
 class Caretakers:
     def __init__(self, name, age, specialty):
         self.name = name
         self.age = age
         self.specialty = specialty
+player_xp = 300
+
 
 class Habitat:
     def __init__(self, temperature, humidity, elevation, terrestial, aqeous):
@@ -32,19 +36,27 @@ class Habitat:
         self.elevation = elevation
         self.terrestial = terrestial
         self.aqeous = aqeous
-    
+        
+#humidity goes from 0/100 and elevation/temperature and terrestrial/aqeuos are 0/100 with respect to eachother are real numbers
+Desert = Habitat(temperature = 40, humidity = 10, elevation = 20, terrestrial = 99, aqeous=1)
+Ocean = Habitat(temperature = 10, humidity = 100, elevation = 0, terrestrial = 0, aqeous=100)
+Forest = Habitat(temperature = 15, humidity = 40, elevation = 100, terrestrial = 75, aqeous=25)
+Mountains = Habitat(temperature = -10, humidity = 60, elevation = 3000, terrestrial = 90, aqeous=10)
+Lake = Habitat(temperature = 10, humidity = 100, elevation = 0, terrestrial = 0, aqeous=100)
+Shore= Habitat(temperature = 15, humidity = 80, elevation = 0, terrestrial = 40, aqeous=60)
+
+
 caretaker_list = []
 
 species_list = []
 
-def add_species(self):
-
+def add_species():
     xp_req = 100
     if len(species_list) >= 4:
         print("Maximum number of species reached.")
         return
-    
-    if self.xp < xp_req:
+
+    if player_xp < xp_req:
         print("Not enough XP to add a new species.")
         return
     species = input("Enter species: ")
@@ -59,7 +71,7 @@ def add_species(self):
         colour = input("Enter the colour of the animal: ")
         limbs = input("Enter the number of limbs the animal has: ")
         new_species = terrestial(species, xp, health, lungs, fur, colour, limbs)
-    
+
     elif animal_type.lower() == 'aquatic':
         gills = input("Does the animal have gills? (yes/no): ")
         fins = input("Does the animal have fins? (yes/no): ")
@@ -73,6 +85,7 @@ def add_species(self):
     self.xp -= xp_req
     print(f"Species added! You now have {self.xp} XP.")
 
+
 def add_caretaker():
     if len(caretaker_list) >= 1:
         print("Maximum number of caretakers reached.")
@@ -84,6 +97,7 @@ def add_caretaker():
     caretaker_list.append(new_caretaker)
     print(f"{name} has been added to the caretaker list.")
 
+
 generation_counter = 0
 def iterate_generation(self):
     global generation_counter
@@ -92,4 +106,3 @@ def iterate_generation(self):
     if len(species_list) == 0:
         print("Youve lost! No species left to evolve.")
         return
-##change

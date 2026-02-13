@@ -1,9 +1,9 @@
 class Habitat:
-    def __init__(self, temperature, humidity, elevation, terrestial, aqeous):
+    def __init__(self, temperature, humidity, elevation, terrestrial, aqeous):
         self.temperature = temperature
         self.humidity = humidity
         self.elevation = elevation
-        self.terrestial = terrestial
+        self.terrestrial = terrestrial
         self.aqeous = aqeous
         
 #humidity goes from 0/100 and elevation/temperature and terrestrial/aqeuos are 0/100 with respect to eachother are real numbers

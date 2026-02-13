@@ -1,13 +1,13 @@
 class Animal:  # parent class
-    def __init__(self, species, health):
+    def __init__(self, species, xp, health):
         self.species = species
+        self.xp = xp
         self.health = health
 
 
-
 class terrestial(Animal):  # subclass 1):
-    def __init__(self, species, health, lungs, fur, colour, limbs):
-        super().__init__(species, health)
+    def __init__(self, species, xp, health, lungs, fur, colour, limbs):
+        super().__init__(species, xp, health)
         self.lungs = lungs
         self.fur = fur
         self.colour = colour
@@ -15,8 +15,8 @@ class terrestial(Animal):  # subclass 1):
 
 
 class aquatic(Animal):  # subclass 2)
-    def __init__(self, species, health, gills, fins, scales):
-        super().__init__(species, health)
+    def __init__(self, species, xp, health, gills, fins, scales):
+        super().__init__(species, xp, health)
         self.gills = gills
         self.fins = fins
         self.scales = scales
@@ -27,7 +27,6 @@ class Caretakers:
         self.name = name
         self.age = age
         self.specialty = specialty
-player_xp = 300
 
 
 class Habitat:
@@ -37,27 +36,27 @@ class Habitat:
         self.elevation = elevation
         self.terrestial = terrestial
         self.aqeous = aqeous
-        
 #humidity goes from 0/100 and elevation/temperature and terrestrial/aqeuos are 0/100 with respect to eachother are real numbers
-Desert = Habitat(temperature = 40, humidity = 10, elevation = 20, terrestrial = 99, aqeous=1)
-Ocean = Habitat(temperature = 10, humidity = 100, elevation = 0, terrestrial = 0, aqeous=100)
-Forest = Habitat(temperature = 15, humidity = 40, elevation = 100, terrestrial = 75, aqeous=25)
-Mountains = Habitat(temperature = -10, humidity = 60, elevation = 3000, terrestrial = 90, aqeous=10)
-Lake = Habitat(temperature = 10, humidity = 100, elevation = 0, terrestrial = 0, aqeous=100)
-Shore= Habitat(temperature = 15, humidity = 80, elevation = 0, terrestrial = 40, aqeous=60)
+Desert.habitat = Habitat(temperature = 40, humidity = 10, elevation = 20, terrestrial = 99, aqeous=1)
+Ocean.habitat = Habitat(temperature = 10, humidity = 100, elevation = 0, terrestrial = 0, aqeous=100)
+Forest.habitat = Habitat(temperature = 15, humidity = 40, elevation = 100, terrestrial = 75, aqeous=25)
+Mountains.habitat = Habitat(temperature = -10, humidity = 60, elevation = 3000, terrestrial = 90, aqeous=10)
+Lake.habitat = Habitat(temperature = 10, humidity = 100, elevation = 0, terrestrial = 0, aqeous=100)
+Shore.habitat = Habitat(temperature = 15, humidity = 80, elevation = 0, terrestrial = 40, aqeous=60)
 
 
 caretaker_list = []
 
 species_list = []
 
-def add_species():
+
+def add_species(self):
     xp_req = 100
     if len(species_list) >= 4:
         print("Maximum number of species reached.")
         return
 
-    if player_xp < xp_req:
+    if self.xp < xp_req:
         print("Not enough XP to add a new species.")
         return
     species = input("Enter species: ")
@@ -83,9 +82,8 @@ def add_species():
         print("Invalid animal type. Please enter 'terrestial' or 'aquatic'.")
         return
     species_list.append(new_species)
-    global player_xp
-    player_xp -= xp_req
-    print(f"Species added! You now have {player_xp} XP.")
+    self.xp -= xp_req
+    print(f"Species added! You now have {self.xp} XP.")
 
 
 def add_caretaker():
@@ -99,21 +97,15 @@ def add_caretaker():
     caretaker_list.append(new_caretaker)
     print(f"{name} has been added to the caretaker list.")
 
-def restart_game():
-    """Reset game state: clear species and caretakers, reset generation and XP."""
-    global species_list, caretaker_list, generation_counter, player_xp
-    species_list.clear()
-    caretaker_list.clear()
-    generation_counter = 0
-    player_xp = 300
-    print("Game restarted: species and caretakers cleared, generation reset, XP restored.")
-
 
 generation_counter = 0
-def iterate_generation():
+
+
+def iterate_generation(self):
     global generation_counter
     generation_counter += 1
     print(f"Generation {generation_counter} has begun!")
     if len(species_list) == 0:
-        print("Youve lost! No species left to evolve.")           
-        restart_game()
+        print("Youve lost! No species left to evolve.")
+        return
+##change

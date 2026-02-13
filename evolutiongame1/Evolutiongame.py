@@ -82,8 +82,9 @@ def add_species():
         print("Invalid animal type. Please enter 'terrestial' or 'aquatic'.")
         return
     species_list.append(new_species)
-    self.xp -= xp_req
-    print(f"Species added! You now have {self.xp} XP.")
+    global player_xp
+    player_xp -= xp_req
+    print(f"Species added! You now have {player_xp} XP.")
 
 
 def add_caretaker():
@@ -97,12 +98,24 @@ def add_caretaker():
     caretaker_list.append(new_caretaker)
     print(f"{name} has been added to the caretaker list.")
 
+def restart_game():
+    """Reset game state: clear species and caretakers, reset generation and XP."""
+    global species_list, caretaker_list, generation_counter, player_xp
+    species_list.clear()
+    caretaker_list.clear()
+    generation_counter = 0
+    player_xp = 300
+    print("Game restarted: species and caretakers cleared, generation reset, XP restored.")
+
 
 generation_counter = 0
-def iterate_generation(self):
+def iterate_generation():
     global generation_counter
     generation_counter += 1
     print(f"Generation {generation_counter} has begun!")
     if len(species_list) == 0:
-        print("Youve lost! No species left to evolve.")
-        return
+        print("Youve lost! No species left to evolve.")           
+        restart_game()
+
+
+

@@ -1,6 +1,9 @@
 from class_caretaker import *
 from class_animals import *
 from class_habitat import *
+
+global player_xp
+
 generation_counter = 0
 player_xp = 300
 species_list = []
@@ -38,7 +41,6 @@ def add_species():
         print("Invalid animal type. Please enter 'terrestial' or 'aquatic'.")
         return
     species_list.append(new_species)
-    global player_xp
     player_xp -= xp_req
     print(f"Species added! You now have {player_xp} XP.")
 
@@ -69,3 +71,29 @@ def add_caretaker():
     new_caretaker = Caretakers(name, age, specialty)
     caretaker_list.append(new_caretaker)
     print(f"{name} has been added to the caretaker list.")
+
+def display_species_details():
+    flag = False #flag to check if species is found, if not found after cycling through all species, print error message
+    while flag == False:
+
+        for x in species_list:
+            print(f"Species: {x.species}") #print all species to help user know which one to choose
+
+        species_name = input("Enter the name of the species you want details on: ")
+        for x in species_list: #cycle all species to find the one the user wants details on and print its details
+            if x.species.lower() == species_name.lower():
+                print(f"Species: {x.species}")
+                print(f"Health: {x.health}")
+                if isinstance(x, terrestial):
+                    print(f"Lungs: {x.lungs}")
+                    print(f"Fur: {x.fur}")
+                    print(f"Colour: {x.colour}")
+                    print(f"Limbs: {x.limbs}")
+                elif isinstance(x, aquatic):
+                    print(f"Gills: {x.gills}")
+                    print(f"Fins: {x.fins}")
+                    print(f"Scales: {x.scales}")
+                flag = True
+                break
+        if not flag:
+            print("Species not found. Please try again.")

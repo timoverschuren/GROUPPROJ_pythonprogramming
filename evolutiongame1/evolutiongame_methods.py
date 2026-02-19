@@ -1,0 +1,99 @@
+from class_caretaker import *
+from class_animals import *
+from class_habitat import *
+
+global player_xp
+
+generation_counter = 0
+player_xp = 300
+species_list = []
+caretaker_list = []
+
+def add_species():
+    xp_req = 100
+    if len(species_list) >= 4:
+        print("Maximum number of species reached.")
+        return
+
+    if player_xp < xp_req:
+        print("Not enough XP to add a new species.")
+        return
+    species = input("Enter species: ")
+    xp = 100
+    health = 100
+
+    animal_type = input("Is the animal terrestial or aquatic? (Enter 'terrestial' or 'aquatic'): ")
+
+    if animal_type.lower() == 'terrestial':
+        lungs = input("Does the animal have lungs? (yes/no): ")
+        fur = input("Does the animal have fur? (yes/no): ")
+        colour = input("Enter the colour of the animal: ")
+        limbs = input("Enter the number of limbs the animal has: ")
+        new_species = terrestial(species, xp, health, lungs, fur, colour, limbs)
+
+    elif animal_type.lower() == 'aquatic':
+        gills = input("Does the animal have gills? (yes/no): ")
+        fins = input("Does the animal have fins? (yes/no): ")
+        scales = input("Does the animal have scales? (yes/no): ")
+        new_species = aquatic(species, xp, health, gills, fins, scales)
+
+    else:
+        print("Invalid animal type. Please enter 'terrestial' or 'aquatic'.")
+        return
+    species_list.append(new_species)
+    player_xp -= xp_req
+    print(f"Species added! You now have {player_xp} XP.")
+
+def restart_game():
+    """Reset game state: clear species and caretakers, reset generation and XP."""
+    global species_list, caretaker_list, generation_counter, player_xp
+    species_list.clear()
+    caretaker_list.clear()
+    generation_counter = 0
+    player_xp = 300
+    print("Game restarted: species and caretakers cleared, generation reset, XP restored.")
+
+def iterate_generation():
+    global generation_counter
+    generation_counter += 1
+    print(f"Generation {generation_counter} has begun!")
+    if len(species_list) == 0:
+        print("Youve lost! No species left to evolve.")           
+        restart_game()
+
+def add_caretaker():
+    if len(caretaker_list) >= 1:
+        print("Maximum number of caretakers reached.")
+        return
+    name = input("Enter caretaker's name: ")
+    age = int(input("Enter caretaker's age: "))
+    specialty = input("Enter caretaker's specialty: ")
+    new_caretaker = Caretakers(name, age, specialty)
+    caretaker_list.append(new_caretaker)
+    print(f"{name} has been added to the caretaker list.")
+
+def display_species_details():
+    flag = False #flag to check if species is found, if not found after cycling through all species, print error message
+    while flag == False:
+
+        for x in species_list:
+            print(f"Species: {x.species}") #print all species to help user know which one to choose
+
+        species_name = input("Enter the name of the species you want details on: ")
+        for x in species_list: #cycle all species to find the one the user wants details on and print its details
+            if x.species.lower() == species_name.lower():
+                print(f"Species: {x.species}")
+                print(f"Health: {x.health}")
+                if isinstance(x, terrestial):
+                    print(f"Lungs: {x.lungs}")
+                    print(f"Fur: {x.fur}")
+                    print(f"Colour: {x.colour}")
+                    print(f"Limbs: {x.limbs}")
+                elif isinstance(x, aquatic):
+                    print(f"Gills: {x.gills}")
+                    print(f"Fins: {x.fins}")
+                    print(f"Scales: {x.scales}")
+                flag = True
+                break
+        if not flag:
+            print("Species not found. Please try again.")

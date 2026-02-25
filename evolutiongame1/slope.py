@@ -1,98 +1,136 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from class_animals import trait_to_curve as _trait_to_curve
+from class_habitat import habitat_to_curve as _habitat_curve_from_name
 
-def ideal_habitat_curve(curve: list[float], length: int) -> list[float]:
-    """ The habitat curve is normalized to the same number of steps. Expand or shrink `curve` to match `length` points. Empty input yields a flat zero curve."""
-    if length <= 0:
-        return []
+
+# -------------------------------------------------
+# Curve alignment helper
+# -------------------------------------------------
+def _align_curve(curve, n: int):
+    """Pad or trim a curve to exactly n values."""
     if not curve:
-        return [0.0] * length
-    if len(curve) == length:
-        return list(curve)
+        return [0.0] * n
+    if len(curve) == n:
+        return curve
+    if len(curve) > n:
+        return curve[:n]
+    return curve + [curve[-1]] * (n - len(curve))
 
-    x_old = np.linspace(0, 1, num=len(curve))
-    x_new = np.linspace(0, 1, num=length)
-    y_new = np.interp(x_new, x_old, np.array(curve, dtype=float))
-    return y_new.tolist()
 
+# -------------------------------------------------
+# Averaging trait curves (multiple trait names → 1 curve)
+# -------------------------------------------------
 def _average_trait_curve(selected_traits: list) -> list[float]:
-    """Average the cumulative-mean curves for the selected traits."""
+    """
+    Takes a list of trait identifiers (names/keys expected by class_animals.trait_to_curve)
+    and returns the mean curve across them.
+    """
     if not selected_traits:
         return []
 
+    # Convert names → curve data
     curves = [_trait_to_curve(t) for t in selected_traits]
-    curves = [c for c in curves if c]  # drop unknown/empty
+    curves = [c for c in curves if c]
 
     if not curves:
         return []
 
-    # All trait curves should be length 5 by design; still, align to be safe.
     max_len = max(len(c) for c in curves)
-    curves = [c if len(c) == max_len else ideal_habitat_curve(c, max_len) for c in curves]
-    return np.mean(np.array(curves, dtype=float), axis=0).tolist()
+    aligned = [_align_curve(c, max_len) for c in curves]
 
-def render_slope_comparison(selected_traits: list[float], habitat_curve: list[float], habitat_name: str, center_for_visuals: bool = False, show_diff_shading: bool = True,) -> None:
-    """Compares animal trait compatability with the habitat's ideal conditions. Average of all selected trait curves. Plot 2 slopes (trait vs habitat)."""
-    # Build averaged trait curve using shared logic (no duplication).
+    return np.mean(np.array(aligned, float), axis=0).tolist()
+
+
+# -------------------------------------------------
+# PLOT FUNCTION
+# -------------------------------------------------
+def render_slope_comparison(
+    selected_traits: list,
+    habitat_name: str,
+    center_for_visuals: bool = False,
+    show_diff_shading: bool = True,
+):
+    """
+    Plot the averaged trait curve vs. the habitat curve.
+    Habitat curve comes from `habitat_to_curve` (already fixed).
+    """
+
+    # Compute the trait curve (average of selected traits)
     trait_curve = _average_trait_curve(selected_traits)
 
-    # Pick a common number of steps and align both curves for plotting/comparison.
+    # Fetch habitat curve (this is now a list[float], length 5)
+    habitat_curve = _habitat_curve_from_name(habitat_name)
+
+    # If either is missing, don't crash
+    if not trait_curve or not habitat_curve:
+        print("Invalid trait or habitat curve.")
+        return
+
+    # Determine plotting length
     n_steps = max(len(trait_curve), len(habitat_curve), 5)
     steps = list(range(1, n_steps + 1))
 
-    trait_aligned = ideal_habitat_curve(trait_curve, n_steps)
-    habitat_aligned = ideal_habitat_curve(habitat_curve, n_steps)
+    # ✔ Correct: simply align the curves, do NOT re‑average them
+    trait_aligned = _align_curve(trait_curve, n_steps)
+    habitat_aligned = _align_curve(habitat_curve, n_steps)
 
-    # Compatibility
-    mean_trait = float(np.mean(trait_curve)) if trait_curve else 0.0
-    mean_hab = float(np.mean(habitat_aligned)) if habitat_aligned else 0.0
+    # Compute compatibility
+    mean_trait = float(np.mean(trait_curve))
+    mean_hab = float(np.mean(habitat_curve))
     diff = mean_trait - mean_hab
     verdict = "Good Fit" if abs(diff) <= 0.05 else "Bad Fit"
 
-    # Plot
-    plot_trait = np.array(trait_aligned, dtype=float)
-    plot_habitat = np.array(habitat_aligned, dtype=float)
-    if center_for_visuals:
-        plot_trait = plot_trait - plot_trait.mean()
-        plot_habitat = plot_habitat - plot_habitat.mean()
+    # Convert to numpy for shading operations
+    plot_trait = np.array(trait_aligned, float)
+    plot_habitat = np.array(habitat_aligned, float)
 
-    plt.figure("Compatability of Traits and Habitat")
-    plt.clf() # Clears the old graph
+    # Optional centering
+    if center_for_visuals:
+        plot_trait -= plot_trait.mean()
+        plot_habitat -= plot_habitat.mean()
+
+    # ------------- Plotting ---------------
+    plt.figure("Compatibility of Traits and Habitat")
+    plt.clf()
+
     if show_diff_shading:
-        # Build piecewise shading based on which curve is on top
+        # Shade where trait is above habitat
         plt.fill_between(
             steps, plot_trait, plot_habitat,
             where=(plot_trait >= plot_habitat),
-            interpolate=True, color="#3498db", alpha=0.12, label="Trait above Habitat"
+            interpolate=True, alpha=0.12, color="#3498db"
         )
+        # Shade where habitat is above trait
         plt.fill_between(
             steps, plot_trait, plot_habitat,
             where=(plot_trait < plot_habitat),
-            interpolate=True, color="#27ae60", alpha=0.12, label="Habitat above Trait"
+            interpolate=True, alpha=0.12, color="#27ae60"
         )
 
-        # Lines and points
-    plt.plot(steps, plot_trait, color="#3498db", marker="o", linewidth=3, label="Your Animal Evolution")
-    plt.plot(steps, plot_habitat, color="#27ae60", linestyle="--", linewidth=2, label=f"{habitat_name} Ideal")
+    # Actual curves
+    plt.plot(
+        steps, plot_trait, color="#3498db",
+        marker="o", linewidth=3, label="Your Animal Evolution"
+    )
+    plt.plot(
+        steps, plot_habitat, color="#27ae60",
+        linestyle="--", linewidth=2, label=f"{habitat_name} Ideal"
+    )
 
-    # Text & axes
-    title_suffix = " (centered)" if center_for_visuals else ""
-    plt.title(f"Compatibility of Traits vs Habitat — {habitat_name}")
+    # Titles / labels
+    suffix = " (centered)" if center_for_visuals else ""
+    plt.title(f"Compatibility of Traits vs Habitat — {habitat_name}{suffix}")
     plt.xlabel("Evolutionary Steps")
-    plt.ylabel("Adaptation Strength" + (" (centered)" if center_for_visuals else ""))
+    plt.ylabel("Adaptation Strength" + suffix)
     plt.grid(True, alpha=0.3)
-    plt.legend(ncol=2)
+    plt.legend()
     plt.xticks(steps)
     plt.xlim(min(steps) - 0.5, max(steps) + 0.5)
 
-    # Verdict label (computed on non-centered aligned means)
-    plt.gcf().text(0.02, 0.96, f"{verdict}", fontsize=9, va="top")
+    # Verdict text
+    plt.gcf().text(0.02, 0.96, verdict, fontsize=9, va="top")
 
     plt.tight_layout()
     plt.pause(0.1)
     plt.show(block=False)
-
-
-
-

@@ -27,7 +27,7 @@ def render_tree(selected_traits: list[str], habitat_name: str) -> None:
     plt.plot(steps, y, color="#34495e", linewidth=2, zorder=2)  # connecting the points
     plt.yticks([])  # Hide y-axis ticks as this is a timeline
     plt.title(f"Trait Evolution Tree — Habitat: {habitat_name}")
-    plt.xlabel("Evolutionary Step")
+    plt.xlabel("Evolutionary Steps")
     plt.grid(True, axis="x", alpha=0.3)
     plt.xticks(steps)  # Force integer ticks
     plt.xlim(min(steps) - 0.5, max(steps) + 0.5)  # Prevent auto-zoom issues

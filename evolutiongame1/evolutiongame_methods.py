@@ -101,15 +101,23 @@ def display_species_details():
 def health_system_habitat(animal, habitat):
     if isinstance(animal, species_list) != habitat("terrestrial") and isinstance(animal, species_list) !=habitat("aqueous"):
         animal.health -= 10
+    elif isinstance(animal, species_list) == habitat("terrestrial") and isinstance(animal, species_list) == habitat("aqueous"):
+        animal.health = +10
 def health_system_temperature(animal, habitat):
     if isinstance(animal, species_list) != habitat("temperature"):
         animal.health -= 10
+    elif isinstance(animal, species_list) == habitat("temperature"):
+        animal.health = +10
 def health_system_humidity(animal, habitat):
     if isinstance(animal, species_list) != habitat("humidity"):
         animal.health -= 10
+    elif isinstance(animal, species_list) == habitat("humidity"):
+        animal.health = +10
 def health_system_elevation(animal, habitat):
     if isinstance(animal, species_list) != habitat("elevation"):
         animal.health -= 10
+    elif isinstance(animal, species_list) == habitat("elevation"):
+        animal.health = +10
 
 
 #Remove the species when the population (health) reaches 0

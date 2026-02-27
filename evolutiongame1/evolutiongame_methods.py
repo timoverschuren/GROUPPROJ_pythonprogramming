@@ -97,3 +97,24 @@ def display_species_details():
                 break
         if not flag:
             print("Species not found. Please try again.")
+#compare animal traits with habitat attributes to calculate if animal loses "health" or not, and if it does, 10 health is lost. If health reaches 0, the species is removed from the species list.
+def health_system_habitat(animal, habitat):
+    if isinstance(animal, species_list) != habitat("terrestrial") and isinstance(animal, species_list) !=habitat("aqueous"):
+        animal.health -= 10
+def health_system_temperature(animal, habitat):
+    if isinstance(animal, species_list) != habitat("temperature"):
+        animal.health -= 10
+def health_system_humidity(animal, habitat):
+    if isinstance(animal, species_list) != habitat("humidity"):
+        animal.health -= 10
+def health_system_elevation(animal, habitat):
+    if isinstance(animal, species_list) != habitat("elevation"):
+        animal.health -= 10
+def species_removal():
+    for animal in species_list:
+        if animal.health <= 0:
+            print(f"{animal.species} species has gone extinct due to insufficient population.")
+            species_list.remove(animal)
+def health_check():
+    for animal in species_list:
+        print(f"{animal.species} health: {animal.health}")

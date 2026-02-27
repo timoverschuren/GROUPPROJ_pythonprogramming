@@ -35,7 +35,7 @@ def add_species():
         gills = input("Does the animal have gills? (yes/no): ")
         fins = input("Does the animal have fins? (yes/no): ")
         scales = input("Does the animal have scales? (yes/no): ")
-        new_species = aquatic(species, xp, health, gills, fins, scales)
+        new_species = aqueous(species, xp, health, gills, fins, scales)
 
     else:
         print("Invalid animal type. Please enter 'terrestial' or 'aquatic'.")
@@ -94,7 +94,7 @@ def display_species_details():
                     print(f"Fur: {x.fur}")
                     print(f"Colour: {x.colour}")
                     print(f"Limbs: {x.limbs}")
-                elif isinstance(x, aquatic):
+                elif isinstance(x, aqueos):
                     print(f"Gills: {x.gills}")
                     print(f"Fins: {x.fins}")
                     print(f"Scales: {x.scales}")
@@ -106,15 +106,24 @@ def display_species_details():
 def health_system_habitat(animal, habitat):
     if isinstance(animal, species_list) != habitat("terrestrial") and isinstance(animal, species_list) !=habitat("aqueous"):
         animal.health -= 10
+    elif isinstance(animal, species_list) == habitat("terrestial")
+        animal.health += 10 
 def health_system_temperature(animal, habitat):
     if isinstance(animal, species_list) != habitat("temperature"):
         animal.health -= 10
+    elif isinstance(animal, species_list) == habitat("temperature"):
+        animal.health += 10
 def health_system_humidity(animal, habitat):
     if isinstance(animal, species_list) != habitat("humidity"):
         animal.health -= 10
+    elif isinstance(animal, species_list) == habitat("humidity"):
+        animal.health += 10
 def health_system_elevation(animal, habitat):
     if isinstance(animal, species_list) != habitat("elevation"):
         animal.health -= 10
+    elif isinstance(animal, species_list) == habitat("elevation"):
+        animal.health += 10
+
 #Remove the species when the population (health) reaches 0
 def species_removal():
     for animal in species_list:

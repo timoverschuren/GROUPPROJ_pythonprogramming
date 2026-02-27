@@ -28,7 +28,7 @@ traits = {
         "bone internal": {"temperature": 10, "humidity": 50, "elevation": 70, "terrestrial": 80, "aqueous": 20},
         "bone exoskeleton": {"temperature": 30, "humidity": 40, "elevation": 20, "terrestrial": 100, "aqueous": 0},
         "cartilage": {"temperature": 12, "humidity": 100, "elevation": 5, "terrestrial": 0, "aqueous": 100},
-        "none": {"temperature": 18, "humidity": 90, "elevation": 10, "terrestrial": 30, "aqueous": 70},
+        "hydrostatic skeleton": {"temperature": 18, "humidity": 90, "elevation": 10, "terrestrial": 30, "aqueous": 70},
     },
 
     "skin": {
@@ -63,11 +63,11 @@ traits = {
 
 # Normalization ranges
 _ranges = {
-    "temperature": (-20.0, 50.0),
-    "humidity": (0.0, 100.0),
-    "elevation": (0.0, 4000.0),
-    "terrestrial": (0.0, 100.0),
-    "aqueous": (0.0, 100.0),
+    "temperature": (0.0,   50.0),   # °C
+    "humidity":    (0.0,   100.0),  # %
+    "elevation":   (0.0,   100.0), # meters
+    "terrestrial": (0.0,   100.0),  # %
+    "aqueous":     (0.0,   100.0),  # %
 }
 
 
@@ -107,10 +107,6 @@ def trait_to_curve(trait_tuple):
     ]
 
     # cumulative mean
-    curve = []
-    s = 0.0
-    for i, v in enumerate(vec, start=1):
-        s += v
-        curve.append(s / i)
+    curve = vec[:]  # Use raw normalized 5 factors
 
     return curve

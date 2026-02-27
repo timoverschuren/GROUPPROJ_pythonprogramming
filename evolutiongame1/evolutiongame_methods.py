@@ -2,7 +2,6 @@ from class_caretaker import *
 from class_animals import *
 from class_habitat import *
 
-global player_xp
 
 generation_counter = 0
 player_xp = 300
@@ -10,17 +9,24 @@ species_list = []
 caretaker_list = []
 
 def add_species():
+    global player_xp
     xp_req = 100
     if len(species_list) >= 4:
         print("Maximum number of species reached.")
+        return
+    print(f"Adding a new species costs {xp_req} XP. You currently have {player_xp} XP.")
+    print("Do you want to add a new species? (yes/no)")
+    choice = input("> ").strip().lower()
+    if choice != "yes":
+        print("Species addition cancelled.")
         return
 
     if player_xp < xp_req:
         print("Not enough XP to add a new species.")
         return
-    species = input("Enter species: ")
-    xp = 100
+    species = input("Enter the new species name: ")
     health = 100
+    new_species = Animal(species, health)
 
     animal_type = input("Is the animal terrestial or aquatic? (Enter 'terrestial' or 'aquatic'): ")
 
@@ -41,8 +47,12 @@ def add_species():
         print("Invalid animal type. Please enter 'terrestial' or 'aquatic'.")
         return
     species_list.append(new_species)
+
+    # deduct cost from global XP and inform player
     player_xp -= xp_req
-    print(f"Species added! You now have {player_xp} XP.")
+    print(f"{xp_req} XP spent. You now have {player_xp} XP remaining.")
+    return player_xp
+
 
 def restart_game():
     """Reset game state: clear species and caretakers, reset generation and XP."""
@@ -102,6 +112,8 @@ def display_species_details():
                 break
         if not flag:
             print("Species not found. Please try again.")
+
+#Health system methods.
 #compare animal traits with habitat attributes to calculate if animal loses "health" or not, and if it does, 10 health is lost. If health reaches 0, the species is removed from the species list.
 def health_system_habitat(animal, habitat):
     if isinstance(animal, species_list) != habitat("terrestrial") and isinstance(animal, species_list) !=habitat("aqueous"):

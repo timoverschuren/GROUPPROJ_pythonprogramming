@@ -19,24 +19,26 @@ while menuflag == True:
 
     #def main() -> None:
         #print("=== Evolution Game (CLI) ===")
-        #while True:
 
-            print("\nMenu: [H]abitat, [T]rait, [V]iew, [Q]uit")
-            cmd = input("> ").strip().lower()
-            if cmd == "h":
-                player_history.get_player_habitat()
-            elif cmd == "t":
-                player_history.get_player_traits()
-            elif cmd == "v":
-                player_history.refresh_screen()
-            elif cmd == "q":
-                print("Exiting game. Goodbye!")
-                break
-            else:
-                print("Unknown command.")
+    while True:
+        print("\nMenu: [H]abitat  [T]rait  [V]iew  [Q]uit")
+        cmd = input("> ").strip().lower()
 
-    #if __name__ == "__main__":
+        if cmd == "h":
+            player_history.get_player_habitat()
 
+        elif cmd == "t":
+            player_history.get_player_traits()
+
+        elif cmd == "v":
+            player_history.refresh_screen()
+
+        elif cmd == "q":
+            print("Goodbye!")
+            break
+
+        else:
+            print("Unknown command.")
+
+#if __name__ == "__main__":
         #main()
-
-#test2

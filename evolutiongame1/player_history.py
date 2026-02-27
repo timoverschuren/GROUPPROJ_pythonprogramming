@@ -3,72 +3,65 @@ import class_habitat
 import slope
 import tree_visualization
 
-traits: dict = getattr(class_animals, "traits", {})
-habitats: dict = getattr(class_habitat, "habitats", {})
+traits = class_animals.traits
 
-# Player choices
-selected_traits: list[str] = []      # grows with player picks
-selected_habitat: str | None = None  # single choice
+selected_traits = []             # List[tuple(category, trait)]
+selected_habitat = None          # string
 
-def get_player_habitat() -> None:
-    """Handles player's habitat choice."""
+
+def get_player_habitat():
     global selected_habitat
 
-    print("Available habitats:")
-    for name in habitats.keys():
-        print(f" - {name}")
+    print("\nAvailable habitats:")
+    for h in class_habitat.habitats:
+        print(f" - {h}")
 
-    choice = input("Select habitat: ").strip()
-    # normalize capitalization to match your dictionary keys
-    choice = choice.capitalize()
+    choice = input("Select habitat: ").strip().lower()
 
-    if choice in habitats:
-        selected_habitat = choice
+    selected_habitat = next((h for h in class_habitat.habitats if h.lower() == choice), None)
+
+    if selected_habitat:
         print(f"Selected habitat: {selected_habitat}")
     else:
-        print("Invalid choice. Please try again.")
+        print("Invalid habitat.")
 
 
-def get_player_traits() -> None:
-    """Handles adding one trait to the player's history."""
+def get_player_traits():
     global selected_traits
 
-    print("Available traits:")
-    for name in traits.keys():
-        print(f" - {name}")
+    print("\nTrait categories:")
+    for category in traits:
+        print(f" - {category}")
 
-    choice = input("Select trait: ").strip()
-    choice = choice.capitalize()
+    cat_input = input("Select category: ").strip().lower()
+    category = next((c for c in traits if c.lower() == cat_input), None)
 
-    if choice in traits:
-        selected_traits.append(choice)
-        print(f"Added trait: {choice}")
-        refresh_screen()  # auto update visuals
-    else:
-        print("Invalid choice. Please try again.")
+    if category is None:
+        print("Invalid category.")
+        return
+
+    print(f"\nOptions for {category}:")
+    for t in traits[category]:
+        print(f" - {t}")
+
+    t_input = input("Select trait: ").strip().lower()
+    trait = next((t for t in traits[category] if t.lower() == t_input), None)
+
+    if trait is None:
+        print("Invalid trait.")
+        return
+
+    selected_traits.append((category, trait))
+
+    print(f"Added: ({category}, {trait})")
+    refresh_screen()
 
 
-def refresh_screen() -> None:
-    """Clears the view and redraws the tree and slope."""
+def refresh_screen():
     print("\n" * 5)
 
-    # Use raw selected trait *names*
-    trait_names = selected_traits.copy()
-
-    # Extract numeric trait values
-    trait_values = [
-        traits[t]["value"]
-        for t in trait_names
-        if t in traits and "value" in traits[t]
-    ]
-
-    # Only set a habitat name if selected
+    trait_tuples = selected_traits.copy()
     habitat_name = selected_habitat if selected_habitat else "Unknown"
 
-    # --- Render ---
-    tree_visualization.render_tree(trait_names, habitat_name)
-
-    slope.render_slope_comparison(
-        selected_traits=trait_names,   # list of trait names
-        habitat_name=habitat_name,     # name only
-    )
+    tree_visualization.render_tree(trait_tuples, habitat_name)
+    slope.render_slope_comparison(trait_tuples, habitat_name)

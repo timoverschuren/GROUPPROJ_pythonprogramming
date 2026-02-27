@@ -3,6 +3,11 @@ class Animal:
         self.species = species
         self.health = health
 
+class animal_trait(Animal):
+    def __init__(self, species, health, traits=None):
+        super().__init__(species, health)
+        # ensure each instance has its own traits list (default empty list)
+        self.traits = traits if traits is not None else []
 
 # ---- Hierarchical traits ----
 traits = {

@@ -26,7 +26,7 @@ def add_species():
         return
     species = input("Enter the new species name: ")
     health = 100
-    new_species = Animal(species, health)
+    new_species = animal_trait(species, health, [])
     species_list.append(new_species)
 
     # deduct cost from global XP and inform player
@@ -34,8 +34,80 @@ def add_species():
     print(f"{xp_req} XP spent. You now have {player_xp} XP remaining.")
     return player_xp
 
-def add_traits(animal, traits):
-    print("Adding traits to species costs 50 XP. You currently have {player_xp} XP.")
+def add_traits():
+    global player_xp
+    xp_req = 10
+
+    if player_xp < xp_req:
+        print("Not enough XP to add traits.")
+        return
+
+    print(f"Adding traits to species costs {xp_req} XP. You currently have {player_xp} XP.")
+    choice = input("Do you want to add traits to your species? (yes/no)\n> ").strip().lower()
+    if choice != "yes":
+        print("Trait addition cancelled.")
+        return
+
+    if not species_list:
+        print("No species available to add traits to.")
+        return
+
+    # Select a species (with retry on invalid)
+    species_choice = None
+    while species_choice is None:
+        print("Select a species to add traits to:")
+        for i, s in enumerate(species_list, start=1):
+            print(f"{i}. {s.species}")
+
+        sel = input("Enter species number or name:\n> ").strip()
+        if sel.isdigit():
+            idx = int(sel) - 1
+            if 0 <= idx < len(species_list):
+                species_choice = species_list[idx]
+            else:
+                print("Invalid species number. Try again.")
+        else:
+            species_choice = next((s for s in species_list if s.species.lower() == sel.lower()), None)
+            if species_choice is None:
+                print("Species not found. Try again.")
+
+    # Select trait category (with retry on invalid)
+    trait_cat_choice = None
+    while trait_cat_choice is None:
+        print("Choose a trait type from the following options:")
+        for trait in traits:
+            print(trait)
+
+        user_input = input("Enter the trait category:\n> ").strip()
+        if user_input in traits:
+            trait_cat_choice = user_input
+        else:
+            trait_cat_choice = next((c for c in traits if c.lower() == user_input.lower()), None)
+            if trait_cat_choice is None:
+                print("Invalid trait category. Try again.")
+
+    # Select specific trait (with retry on invalid)
+    trait_choice2 = None
+    while trait_choice2 is None:
+        print(f"Choose a trait from the following options for {trait_cat_choice}:")
+        for spec_trait in traits[trait_cat_choice]:
+            print(spec_trait)
+
+        user_input = input("Enter the specific trait:\n> ").strip()
+        if user_input in traits[trait_cat_choice]:
+            trait_choice2 = user_input
+        else:
+            trait_choice2 = next((t for t in traits[trait_cat_choice] if t.lower() == user_input.lower()), None)
+            if trait_choice2 is None:
+                print("Invalid trait choice. Try again.")
+
+    # Append trait and deduct XP
+    species_choice.traits.append((trait_cat_choice, trait_choice2))
+    print(f"Added the following trait: {trait_cat_choice} {trait_choice2} to {species_choice.species}.")
+
+    player_xp -= xp_req
+    print(f"{xp_req} XP spent. You now have {player_xp} XP remaining.")
+    return player_xp
 
 def restart_game():
     """Reset game state: clear species and caretakers, reset generation and XP."""

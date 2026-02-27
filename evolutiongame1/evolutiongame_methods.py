@@ -99,25 +99,25 @@ def display_species_details():
 #Health system methods.
 #compare animal traits with habitat attributes to calculate if animal loses "health" or not, and if it does, 10 health is lost. If health reaches 0, the species is removed from the species list.
 def health_system_habitat(animal, habitat):
-    if isinstance(animal, species_list) != habitat("terrestrial") and isinstance(animal, species_list) !=habitat("aqueous"):
+    if isinstance(animal, species_list) <= habitat("terrestrial") and isinstance(animal, species_list) <= habitat("aqueous"):
         animal.health -= 10
-    elif isinstance(animal, species_list) == habitat("terrestrial") and isinstance(animal, species_list) == habitat("aqueous"):
-        animal.health = +10
+    elif isinstance(animal, species_list) >= habitat("terrestrial") and isinstance(animal, species_list) >= habitat("aqueous"):
+        animal.health += 10
 def health_system_temperature(animal, habitat):
-    if isinstance(animal, species_list) != habitat("temperature"):
+    if isinstance(animal, species_list) <= habitat("temperature"):
         animal.health -= 10
-    elif isinstance(animal, species_list) == habitat("temperature"):
-        animal.health = +10
+    elif isinstance(animal, species_list) >= habitat("temperature"):
+        animal.health += 10
 def health_system_humidity(animal, habitat):
-    if isinstance(animal, species_list) != habitat("humidity"):
+    if isinstance(animal, species_list) <= habitat("humidity"):
         animal.health -= 10
-    elif isinstance(animal, species_list) == habitat("humidity"):
-        animal.health = +10
+    elif isinstance(animal, species_list) >= habitat("humidity"):
+        animal.health += 10
 def health_system_elevation(animal, habitat):
-    if isinstance(animal, species_list) != habitat("elevation"):
+    if isinstance(animal, species_list) <= habitat("elevation"):
         animal.health -= 10
-    elif isinstance(animal, species_list) == habitat("elevation"):
-        animal.health = +10
+    elif isinstance(animal, species_list) >= habitat("elevation"):
+        animal.health += 10
 
 
 #Remove the species when the population (health) reaches 0

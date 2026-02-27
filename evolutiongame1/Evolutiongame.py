@@ -2,30 +2,33 @@ from class_caretaker import *
 from class_animals import *
 from class_habitat import *
 from evolutiongame_methods import *
-import player_history
+from player_history import *
 
 menuflag = True
 while menuflag == True:
     print("\nMenu:")
     print("1. Exit Menu")
     print("2. Add Species")
-    choice = input("Enter your choice: ")
+    print("7. Add Traits to Species")
+    choice0 = input("Enter your choice: ")
 
-    if choice == '1':
+    if choice0 == '1':
         menuflag = False
         print("Exiting game. Goodbye!")
-    elif choice == '2':
+    elif choice0 == '2':
         add_species()
-    elif choice == '3':
+    elif choice0 == '3':
         add_caretaker()
-    elif choice == '4':
+    elif choice0 == '4':
         restart_game()
-    elif choice == '5':
+    elif choice0 == '5':
         display_species_details()
-    elif choice == '6':
+    elif choice0 == '6':
         iterate_generation()
+    elif choice0 == '7':
+        add_traits()
     else:
-        print("Invalid choice. Please enter a number from 1 to 1.")
+        print("Invalid choice. Please enter a number from 1 to 7.")
 
 
     #def main() -> None:

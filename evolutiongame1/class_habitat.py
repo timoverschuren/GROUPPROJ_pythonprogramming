@@ -32,9 +32,9 @@ habitats = {
         "aqueous": 25
     },
     "Mountains": {
-        "temperature": -10,
+        "temperature": 0,
         "humidity": 60,
-        "elevation": 3000,
+        "elevation": 100,
         "terrestrial": 90,
         "aqueous": 10
     },
@@ -55,9 +55,9 @@ habitats = {
 }
 
 _ranges = {
-    "temperature": (-20.0, 50.0),   # °C
+    "temperature": (0.0,   50.0),   # °C
     "humidity":    (0.0,   100.0),  # %
-    "elevation":   (0.0,   4000.0), # meters
+    "elevation":   (0.0,   100.0), # meters
     "terrestrial": (0.0,   100.0),  # %
     "aqueous":     (0.0,   100.0),  # %
 }
@@ -95,11 +95,8 @@ def _habitat_to_dict(name: str, h: Habitat) -> dict:
     ]
 
     # Cumulative mean curve required for the slope
-    curve = []
-    s = 0.0
-    for i, v in enumerate(vec, start=1):
-        s += v
-        curve.append(s / i)
+
+    curve = vec[:]  # Use raw normalized 5 factors
 
     return {
         "name": name,

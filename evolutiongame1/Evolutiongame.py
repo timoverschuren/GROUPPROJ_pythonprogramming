@@ -1,4 +1,3 @@
-
 from class_caretaker import *
 from class_animals import *
 from class_habitat import *
@@ -37,4 +36,7 @@ while menuflag == True:
                 print("Unknown command.")
 
     #if __name__ == "__main__":
+
         #main()
+
+#test

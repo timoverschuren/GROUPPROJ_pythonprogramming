@@ -1,4 +1,3 @@
-
 import numpy as np
 from matplotlib import pyplot as plt
 from class_animals import trait_to_curve as _trait_to_curve

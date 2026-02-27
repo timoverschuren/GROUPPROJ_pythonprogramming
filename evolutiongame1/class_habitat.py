@@ -1,3 +1,4 @@
+
 class Habitat:
     def __init__(self, temperature, humidity, elevation, terrestrial, aqueous):
         self.temperature = temperature

@@ -72,4 +72,3 @@ def refresh_screen() -> None:
         selected_traits=trait_names,   # list of trait names
         habitat_name=habitat_name,     # name only
     )
-

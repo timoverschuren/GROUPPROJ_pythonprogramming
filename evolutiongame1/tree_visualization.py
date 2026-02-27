@@ -1,3 +1,4 @@
+
 import matplotlib.pyplot as plt
 
 def render_tree(selected_traits: list[str], habitat_name: str) -> None:

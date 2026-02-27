@@ -27,25 +27,6 @@ def add_species():
     species = input("Enter the new species name: ")
     health = 100
     new_species = Animal(species, health)
-
-    animal_type = input("Is the animal terrestial or aquatic? (Enter 'terrestial' or 'aquatic'): ")
-
-    if animal_type.lower() == 'terrestial':
-        lungs = input("Does the animal have lungs? (yes/no): ")
-        fur = input("Does the animal have fur? (yes/no): ")
-        colour = input("Enter the colour of the animal: ")
-        limbs = input("Enter the number of limbs the animal has: ")
-        new_species = terrestial(species, xp, health, lungs, fur, colour, limbs)
-
-    elif animal_type.lower() == 'aquatic':
-        gills = input("Does the animal have gills? (yes/no): ")
-        fins = input("Does the animal have fins? (yes/no): ")
-        scales = input("Does the animal have scales? (yes/no): ")
-        new_species = aqueous(species, xp, health, gills, fins, scales)
-
-    else:
-        print("Invalid animal type. Please enter 'terrestial' or 'aquatic'.")
-        return
     species_list.append(new_species)
 
     # deduct cost from global XP and inform player
@@ -53,6 +34,8 @@ def add_species():
     print(f"{xp_req} XP spent. You now have {player_xp} XP remaining.")
     return player_xp
 
+def add_traits(animal, traits):
+    print("Adding traits to species costs 50 XP. You currently have {player_xp} XP.")
 
 def restart_game():
     """Reset game state: clear species and caretakers, reset generation and XP."""
@@ -104,7 +87,7 @@ def display_species_details():
                     print(f"Fur: {x.fur}")
                     print(f"Colour: {x.colour}")
                     print(f"Limbs: {x.limbs}")
-                elif isinstance(x, aqueos):
+                elif isinstance(x, aquatic):
                     print(f"Gills: {x.gills}")
                     print(f"Fins: {x.fins}")
                     print(f"Scales: {x.scales}")
@@ -118,23 +101,16 @@ def display_species_details():
 def health_system_habitat(animal, habitat):
     if isinstance(animal, species_list) != habitat("terrestrial") and isinstance(animal, species_list) !=habitat("aqueous"):
         animal.health -= 10
-    elif isinstance(animal, species_list) == habitat("terrestial")
-        animal.health += 10 
 def health_system_temperature(animal, habitat):
     if isinstance(animal, species_list) != habitat("temperature"):
         animal.health -= 10
-    elif isinstance(animal, species_list) == habitat("temperature"):
-        animal.health += 10
 def health_system_humidity(animal, habitat):
     if isinstance(animal, species_list) != habitat("humidity"):
         animal.health -= 10
-    elif isinstance(animal, species_list) == habitat("humidity"):
-        animal.health += 10
 def health_system_elevation(animal, habitat):
     if isinstance(animal, species_list) != habitat("elevation"):
         animal.health -= 10
-    elif isinstance(animal, species_list) == habitat("elevation"):
-        animal.health += 10
+
 
 #Remove the species when the population (health) reaches 0
 def species_removal():

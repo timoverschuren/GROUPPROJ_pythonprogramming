@@ -1,4 +1,3 @@
-
 from class_caretaker import *
 from class_animals import *
 from class_habitat import *
@@ -68,7 +67,12 @@ def add_caretaker():
         return
     name = input("Enter caretaker's name: ")
     age = int(input("Enter caretaker's age: "))
-    specialty = input("Enter caretaker's specialty: ")
+    specialty = input("Enter caretaker's specialty (Aqueous, Terrestrial, Mountaineering, Hot climates, Cold climates): ")
+    valid_specialties = ["Aqueous", "Terrestrial", "Mountaineering", "Hot climates", "Cold climates"]
+    if specialty not in valid_specialties   :
+        print("Invalid specialty. Please choose from the listed options.")
+        return
+    else: print(f"Caretaker specialty is now {specialty}.")
     new_caretaker = Caretakers(name, age, specialty)
     caretaker_list.append(new_caretaker)
     print(f"{name} has been added to the caretaker list.")
@@ -111,6 +115,7 @@ def health_system_humidity(animal, habitat):
 def health_system_elevation(animal, habitat):
     if isinstance(animal, species_list) != habitat("elevation"):
         animal.health -= 10
+#Remove the species when the population (health) reaches 0
 def species_removal():
     for animal in species_list:
         if animal.health <= 0:

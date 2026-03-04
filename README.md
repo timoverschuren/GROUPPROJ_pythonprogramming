@@ -103,6 +103,10 @@ To start the game, from inside the project directory, run:
 
 python Evolutiongame.py
 
+### Dependencies:
+- Matplotlib
+- Numpy
+
 ---
 
 ## Design Philosophy
@@ -160,8 +164,8 @@ Main contributions:
 - Evolutiongame.py: Timo
 - class_animals.py: Ivet and Kian
 - class_caretaker.py: Kristofer and Timo
-- evolutiongame_methods.py: Timo
-- player_history.py: Céleste and Ivet
+- evolutiongame_methods.py: Timo and Kristofer
+- player_history.py: Céleste
 - slope.py: Ivet
 - tree_visualization.py: Ivet
 - README: Kian

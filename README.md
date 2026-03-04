@@ -166,6 +166,3 @@ Main contributions:
 - tree_visualization.py: Ivet
 - README: Kian
 
----
-
-Evolution Simulation Game

@@ -1,7 +1,7 @@
 from class_caretaker import *
 from class_animals import *
+import player_history as ph
 from class_habitat import *
-
 
 generation_counter = 0
 player_xp = 300
@@ -32,6 +32,23 @@ def add_species():
     # deduct cost from global XP and inform player
     player_xp -= xp_req
     print(f"{xp_req} XP spent. You now have {player_xp} XP remaining.")
+
+    # habitat selection
+    print("\nSelect a habitat for your species:")
+    print("Available habitats:")
+    for h in habitats:
+        print(f" - {h}")
+
+    h_choice = input("Enter habitat name (leave empty to skip): ").strip().lower()
+    if h_choice:
+        chosen = next((h for h in habitats if h.lower() == h_choice), None)
+        if chosen is None:
+            print("Invalid habitat name. Try again.")
+
+        else:
+            ph.selected_habitat = chosen
+            print(f"Selected habitat: {ph.selected_habitat}")
+
     return player_xp
 
 def add_traits():
@@ -107,6 +124,14 @@ def add_traits():
 
     player_xp -= xp_req
     print(f"{xp_req} XP spent. You now have {player_xp} XP remaining.")
+
+    # Integrate with visuals: add to player_history and refresh plots
+    try:
+        selected_traits.append((trait_cat_choice, trait_choice2))
+        refresh_screen()  # will render tree + slope; requires a habitat selection for the slope
+    except Exception as e:
+        print(f"(Note) Could not refresh visuals: {e}")
+
     return player_xp
 
 def restart_game():

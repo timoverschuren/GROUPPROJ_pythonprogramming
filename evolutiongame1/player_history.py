@@ -3,69 +3,65 @@ import class_habitat
 import slope
 import tree_visualization
 
-# Expected:
-# class_animals.traits = { "TraitName": {"value": <number>, ...}, ... }
-# class_habitat.habitats = { "HabitatName": {"value": <number>, ...}, ... }
+traits = class_animals.traits
 
-traits: dict = getattr(class_animals, "traits", {})
-habitats: dict = getattr(class_habitat, "habitats", {})
+selected_traits = []             # List[tuple(category, trait)]
+selected_habitat = None          # string
 
 
-# Player choices
-selected_traits: list[str]= []
-# This list will grow as the player picks traits
-selected_habitat: str | None = None
-# This will hold the habitat the player chose
-
-def get_player_habitat() -> None:
-    """ Handles the player's habitat choice."""
+def get_player_habitat():
     global selected_habitat
-    global habitats
-    print(f"Available habitats:")
-    for name in habitats.keys():
-        print(f" - {name}")
+
+    print("\nAvailable habitats:")
+    for h in class_habitat.habitats:
+        print(f" - {h}")
+
     choice = input("Select habitat: ").strip().lower()
-    choice = choice.capitalize()
-    if choice in habitats:
-        selected_habitat = choice
+
+    selected_habitat = next((h for h in class_habitat.habitats if h.lower() == choice), None)
+
+    if selected_habitat:
         print(f"Selected habitat: {selected_habitat}")
     else:
-        print("Invalid choice. Please try again.")
+        print("Invalid habitat.")
 
-def get_player_traits() -> None:
-    """ Handles the player's trait choice (adds one trait at a time)."""
+
+def get_player_traits():
     global selected_traits
-    global traits
-    print(f"Available traits:")
-    for name in traits.keys():
-        print(f" - {name}")
 
-    choice = input("Select trait: ").strip().lower()
-    choice = choice.capitalize()
-    if choice in traits:
-        selected_traits.append(choice) # Pushes choices to list
-        print(f"Added trait: {choice}")
-        refresh_screen() # Automatically triggers visuals after update
-    else:
-        print("Invalid choice. Please try again.")
+    print("\nTrait categories:")
+    for category in traits:
+        print(f" - {category}")
 
-def refresh_screen() -> None:
-    """ Clears the view and redraws the tree and slope."""
+    cat_input = input("Select category: ").strip().lower()
+    category = next((c for c in traits if c.lower() == cat_input), None)
+
+    if category is None:
+        print("Invalid category.")
+        return
+
+    print(f"\nOptions for {category}:")
+    for t in traits[category]:
+        print(f" - {t}")
+
+    t_input = input("Select trait: ").strip().lower()
+    trait = next((t for t in traits[category] if t.lower() == t_input), None)
+
+    if trait is None:
+        print("Invalid trait.")
+        return
+
+    selected_traits.append((category, trait))
+
+    print(f"Added: ({category}, {trait})")
+    refresh_screen()
+
+
+def refresh_screen():
     print("\n" * 5)
-    # Builds the habitat curve if available; else default to flat line of mean=0
-    habitat_name = selected_habitat or "Unknown habitat"
-    habitat_curve = []
-    if selected_habitat and selected_habitat in habitats:
-        habitat_curve = habitats[selected_habitat].get("target_curve", [])
 
-    # Extract numeric values for selected traits (missing keys are ignored)
-    trait_values = [traits[t]["value"] for t in selected_traits if t in traits and "value" in traits[t]]
+    trait_tuples = selected_traits.copy()
+    habitat_name = selected_habitat if selected_habitat else "Unknown"
 
-    # Render plots
-    tree_visualization.render_tree(selected_traits, habitat_name)
-    slope.render_slope_comparison(
-        selected_traits=selected_traits,
-        habitat_curve=habitat_curve,
-        habitat_name=habitat_name,
-    )
-
+    tree_visualization.render_tree(trait_tuples, habitat_name)
+    slope.render_slope_comparison(trait_tuples, habitat_name)

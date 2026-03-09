@@ -1,8 +1,7 @@
 from class_caretaker import *
 from class_animals import *
+import player_history as ph
 from class_habitat import *
-
-global player_xp
 
 generation_counter = 0
 player_xp = 300
@@ -10,39 +9,130 @@ species_list = []
 caretaker_list = []
 
 def add_species():
+    global player_xp
     xp_req = 100
     if len(species_list) >= 4:
         print("Maximum number of species reached.")
+        return
+    print(f"Adding a new species costs {xp_req} XP. You currently have {player_xp} XP.")
+    print("Do you want to add a new species? (yes/no)")
+    choice = input("> ").strip().lower()
+    if choice != "yes":
+        print("Species addition cancelled.")
         return
 
     if player_xp < xp_req:
         print("Not enough XP to add a new species.")
         return
-    species = input("Enter species: ")
-    xp = 100
+    species = input("Enter the new species name: ")
     health = 100
-
-    animal_type = input("Is the animal terrestial or aquatic? (Enter 'terrestial' or 'aquatic'): ")
-
-    if animal_type.lower() == 'terrestial':
-        lungs = input("Does the animal have lungs? (yes/no): ")
-        fur = input("Does the animal have fur? (yes/no): ")
-        colour = input("Enter the colour of the animal: ")
-        limbs = input("Enter the number of limbs the animal has: ")
-        new_species = terrestial(species, xp, health, lungs, fur, colour, limbs)
-
-    elif animal_type.lower() == 'aquatic':
-        gills = input("Does the animal have gills? (yes/no): ")
-        fins = input("Does the animal have fins? (yes/no): ")
-        scales = input("Does the animal have scales? (yes/no): ")
-        new_species = aquatic(species, xp, health, gills, fins, scales)
-
-    else:
-        print("Invalid animal type. Please enter 'terrestial' or 'aquatic'.")
-        return
+    new_species = animal_trait(species, health, [])
     species_list.append(new_species)
+
+    # deduct cost from global XP and inform player
     player_xp -= xp_req
-    print(f"Species added! You now have {player_xp} XP.")
+    print(f"{xp_req} XP spent. You now have {player_xp} XP remaining.")
+
+    # habitat selection
+    print("\nSelect a habitat for your species:")
+    print("Available habitats:")
+    for h in habitats:
+        print(f" - {h}")
+
+    h_choice = input("Enter habitat name (leave empty to skip): ").strip().lower()
+    if h_choice:
+        chosen = next((h for h in habitats if h.lower() == h_choice), None)
+        if chosen is None:
+            print("Invalid habitat name. Try again.")
+
+        else:
+            ph.selected_habitat = chosen
+            print(f"Selected habitat: {ph.selected_habitat}")
+
+    return player_xp
+
+def add_traits():
+    global player_xp
+    xp_req = 10
+
+    if player_xp < xp_req:
+        print("Not enough XP to add traits.")
+        return
+
+    print(f"Adding traits to species costs {xp_req} XP. You currently have {player_xp} XP.")
+    choice = input("Do you want to add traits to your species? (yes/no)\n> ").strip().lower()
+    if choice != "yes":
+        print("Trait addition cancelled.")
+        return
+
+    if not species_list:
+        print("No species available to add traits to.")
+        return
+
+    # Select a species (with retry on invalid)
+    species_choice = None
+    while species_choice is None:
+        print("Select a species to add traits to:")
+        for i, s in enumerate(species_list, start=1):
+            print(f"{i}. {s.species}")
+
+        sel = input("Enter species number or name:\n> ").strip()
+        if sel.isdigit():
+            idx = int(sel) - 1
+            if 0 <= idx < len(species_list):
+                species_choice = species_list[idx]
+            else:
+                print("Invalid species number. Try again.")
+        else:
+            species_choice = next((s for s in species_list if s.species.lower() == sel.lower()), None)
+            if species_choice is None:
+                print("Species not found. Try again.")
+
+    # Select trait category (with retry on invalid)
+    trait_cat_choice = None
+    while trait_cat_choice is None:
+        print("Choose a trait type from the following options:")
+        for trait in traits:
+            print(trait)
+
+        user_input = input("Enter the trait category:\n> ").strip()
+        if user_input in traits:
+            trait_cat_choice = user_input
+        else:
+            trait_cat_choice = next((c for c in traits if c.lower() == user_input.lower()), None)
+            if trait_cat_choice is None:
+                print("Invalid trait category. Try again.")
+
+    # Select specific trait (with retry on invalid)
+    trait_choice2 = None
+    while trait_choice2 is None:
+        print(f"Choose a trait from the following options for {trait_cat_choice}:")
+        for spec_trait in traits[trait_cat_choice]:
+            print(spec_trait)
+
+        user_input = input("Enter the specific trait:\n> ").strip()
+        if user_input in traits[trait_cat_choice]:
+            trait_choice2 = user_input
+        else:
+            trait_choice2 = next((t for t in traits[trait_cat_choice] if t.lower() == user_input.lower()), None)
+            if trait_choice2 is None:
+                print("Invalid trait choice. Try again.")
+
+    # Append trait and deduct XP
+    species_choice.traits.append((trait_cat_choice, trait_choice2))
+    print(f"Added the following trait: {trait_cat_choice} {trait_choice2} to {species_choice.species}.")
+
+    player_xp -= xp_req
+    print(f"{xp_req} XP spent. You now have {player_xp} XP remaining.")
+
+    # Integrate with visuals: add to player_history and refresh plots
+    try:
+        selected_traits.append((trait_cat_choice, trait_choice2))
+        refresh_screen()  # will render tree + slope; requires a habitat selection for the slope
+    except Exception as e:
+        print(f"(Note) Could not refresh visuals: {e}")
+
+    return player_xp
 
 def restart_game():
     """Reset game state: clear species and caretakers, reset generation and XP."""
@@ -67,7 +157,12 @@ def add_caretaker():
         return
     name = input("Enter caretaker's name: ")
     age = int(input("Enter caretaker's age: "))
-    specialty = input("Enter caretaker's specialty: ")
+    specialty = input("Enter caretaker's specialty (Aqueous, Terrestrial, Mountaineering, Hot climates, Cold climates): ")
+    valid_specialties = ["Aqueous", "Terrestrial", "Mountaineering", "Hot climates", "Cold climates"]
+    if specialty not in valid_specialties   :
+        print("Invalid specialty. Please choose from the listed options.")
+        return
+    else: print(f"Caretaker specialty is now {specialty}.")
     new_caretaker = Caretakers(name, age, specialty)
     caretaker_list.append(new_caretaker)
     print(f"{name} has been added to the caretaker list.")
@@ -97,3 +192,37 @@ def display_species_details():
                 break
         if not flag:
             print("Species not found. Please try again.")
+
+#Health system methods.
+#compare animal traits with habitat attributes to calculate if animal loses "health" or not, and if it does, 10 health is lost. If health reaches 0, the species is removed from the species list.
+def health_system_habitat(animal, habitat):
+    if isinstance(animal, species_list) <= habitat("terrestrial") and isinstance(animal, species_list) <= habitat("aqueous"):
+        animal.health -= 10
+    elif isinstance(animal, species_list) >= habitat("terrestrial") and isinstance(animal, species_list) >= habitat("aqueous"):
+        animal.health += 10
+def health_system_temperature(animal, habitat):
+    if isinstance(animal, species_list) <= habitat("temperature"):
+        animal.health -= 10
+    elif isinstance(animal, species_list) >= habitat("temperature"):
+        animal.health += 10
+def health_system_humidity(animal, habitat):
+    if isinstance(animal, species_list) <= habitat("humidity"):
+        animal.health -= 10
+    elif isinstance(animal, species_list) >= habitat("humidity"):
+        animal.health += 10
+def health_system_elevation(animal, habitat):
+    if isinstance(animal, species_list) <= habitat("elevation"):
+        animal.health -= 10
+    elif isinstance(animal, species_list) >= habitat("elevation"):
+        animal.health += 10
+
+
+#Remove the species when the population (health) reaches 0
+def species_removal():
+    for animal in species_list:
+        if animal.health <= 0:
+            print(f"{animal.species} species has gone extinct due to insufficient population.")
+            species_list.remove(animal)
+def health_check():
+    for animal in species_list:
+        print(f"{animal.species} health: {animal.health}")

@@ -2,6 +2,7 @@ from class_caretaker import *
 from class_animals import *
 import player_history as ph
 from class_habitat import *
+from player_history import refresh_screen
 
 generation_counter = 0
 player_xp = 300
@@ -27,27 +28,27 @@ def add_species():
     species = input("Enter the new species name: ")
     health = 100
     new_species = animal_trait(species, health, [])
+    new_species.habitat = None
     species_list.append(new_species)
 
     # deduct cost from global XP and inform player
     player_xp -= xp_req
     print(f"{xp_req} XP spent. You now have {player_xp} XP remaining.")
 
-    # habitat selection
-    print("\nSelect a habitat for your species:")
-    print("Available habitats:")
+    # per-species habitat selection
+    print("\nSelect a habitat for this species. Available habitats:")
     for h in habitats:
         print(f" - {h}")
 
-    h_choice = input("Enter habitat name (leave empty to skip): ").strip().lower()
-    if h_choice:
+    while True:
+        h_choice = input("Enter habitat name: ").strip().lower()
         chosen = next((h for h in habitats if h.lower() == h_choice), None)
         if chosen is None:
             print("Invalid habitat name. Try again.")
-
-        else:
-            ph.selected_habitat = chosen
-            print(f"Selected habitat: {ph.selected_habitat}")
+            continue
+        new_species.habitat = chosen
+        print(f"{new_species.species} habitat set to: {new_species.habitat}")
+        break
 
     return player_xp
 
@@ -125,14 +126,63 @@ def add_traits():
     player_xp -= xp_req
     print(f"{xp_req} XP spent. You now have {player_xp} XP remaining.")
 
-    # Integrate with visuals: add to player_history and refresh plots
-    try:
-        selected_traits.append((trait_cat_choice, trait_choice2))
-        refresh_screen()  # will render tree + slope; requires a habitat selection for the slope
-    except Exception as e:
-        print(f"(Note) Could not refresh visuals: {e}")
-
     return player_xp
+
+
+def render_visuals_for_species():
+    """
+    On-demand rendering helper (call this from File 1 when user presses your menu #8).
+    Lets the user choose a species; then copies ONLY that species' data
+    into player_history's view-state and renders tree + slope.
+    """
+    if not species_list:
+        print("No species available to render.")
+        return
+
+    # Pick a species to visualize
+    target = None
+    while target is None:
+        print("Select a species to render:")
+        for i, s in enumerate(species_list, start=1):
+            print(f"{i}. {s.species} (habitat: {getattr(s, 'habitat', None)})")
+
+        sel = input("Enter species number or name:\n> ").strip()
+        if sel.isdigit():
+            idx = int(sel) - 1
+            if 0 <= idx < len(species_list):
+                target = species_list[idx]
+            else:
+                print("Invalid species number. Try again.")
+        else:
+            target = next((s for s in species_list if s.species.lower() == sel.lower()), None)
+            if target is None:
+                print("Species not found. Try again.")
+
+    # If species has no habitat, let the user choose one now (still on-demand)
+    if getattr(target, "habitat", None) is None:
+        print("\nThis species has no habitat yet. Choose one now (or press Enter to skip):")
+        for h in habitats:
+            print(f" - {h}")
+        h_choice = input("Habitat name (optional): ").strip().lower()
+        if h_choice:
+            chosen = next((h for h in habitats if h.lower() == h_choice), None)
+            if chosen is None:
+                print("Invalid habitat. Proceeding without slope.")
+            else:
+                target.habitat = chosen
+
+    # Sync ONLY this species' traits + habitat into the visualization module
+    ph.selected_traits = target.traits.copy()
+    ph.selected_habitat = getattr(target, "habitat", None)
+
+    try:
+        ph.refresh_screen()  # Will draw tree; slope draws only if both curves are valid
+        print(f"Rendered visuals for '{target.species}' (habitat: {ph.selected_habitat}).")
+        if ph.selected_habitat is None:
+            print("(Note) No habitat set, so slope comparison will not render.")
+    except Exception as e:
+        print(f"(Note) Could not render visuals: {e}")
+
 
 def restart_game():
     """Reset game state: clear species and caretakers, reset generation and XP."""

@@ -30,7 +30,9 @@ while menuflag == True:
     elif choice0 == '7':
         add_traits()
     elif choice0 == '8':
-        player_history.refresh_screen()
+        from evolutiongame_methods import render_visuals_for_species
+        render_visuals_for_species()
+
 
 else:
         print("Invalid choice. Please enter a number from 1 to 8.")

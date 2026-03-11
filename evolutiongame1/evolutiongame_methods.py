@@ -37,6 +37,7 @@ def add_species():
 def add_traits(animal, traits):
     print("Adding traits to species costs 50 XP. You currently have {player_xp} XP.")
 
+
 def restart_game():
     """Reset game state: clear species and caretakers, reset generation and XP."""
     global species_list, caretaker_list, generation_counter, player_xp
@@ -54,6 +55,7 @@ def iterate_generation():
         print("Youve lost! No species left to evolve.")           
         restart_game()
 
+
 def add_caretaker():
     if len(caretaker_list) >= 1:
         print("Maximum number of caretakers reached.")
@@ -69,6 +71,8 @@ def add_caretaker():
     new_caretaker = Caretakers(name, age, specialty)
     caretaker_list.append(new_caretaker)
     print(f"{name} has been added to the caretaker list.")
+    return
+
 
 def display_species_details():
     flag = False #flag to check if species is found, if not found after cycling through all species, print error message
@@ -76,6 +80,14 @@ def display_species_details():
 
         for x in species_list:
             print(f"Species: {x.species}") #print all species to help user know which one to choose
+        choice = input("Enter the name of the species you want to view details for: ")
+        print(choice.animal)
+        if flag == False:
+            print("Species not found. Returning to main menu.")
+            return
+                
+                
+        
 
         species_name = input("Enter the name of the species you want details on: ")
         for x in species_list: #cycle all species to find the one the user wants details on and print its details
@@ -119,13 +131,7 @@ def health_system_elevation(animal, habitat):
     elif isinstance(animal, species_list) >= habitat("elevation"):
         animal.health += 10
 
-
-#Remove the species when the population (health) reaches 0
-def species_removal():
-    for animal in species_list:
-        if animal.health <= 0:
-            print(f"{animal.species} species has gone extinct due to insufficient population.")
-            species_list.remove(animal)
 def health_check():
     for animal in species_list:
         print(f"{animal.species} health: {animal.health}")
+    return

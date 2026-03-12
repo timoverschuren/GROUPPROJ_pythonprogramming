@@ -10,13 +10,15 @@ while menuflag == True:
     print("\nMenu:")
     print("1. Exit Menu")
     print("2. Add Species")
-
     print("3. Add Caretaker")
     print("4. Restart Game")
     print("5. Display Species Details")
     print("6. Iterate Generation")
     print("7. Add Traits to Species")
-    print("8. Generate Visuals")
+    print("8. Assign species to habitat")
+    print("9. Generate Visuals")
+    print("10. Check XP")
+    print("11. Check species assigned habitats")
     choice0 = input("Enter your choice: ")
 
 
@@ -36,8 +38,14 @@ while menuflag == True:
     elif choice0 == '7':
         add_traits()
     elif choice0 == '8':
+        assign_species_to_habitat()
+    elif choice0 == '9':
         from evolutiongame_methods import render_visuals_for_species
         render_visuals_for_species()
+    elif choice0 == '10':
+        check_xp()
+    elif choice0 == '11':
+        check_assigned_habitats()
 
 
 else:

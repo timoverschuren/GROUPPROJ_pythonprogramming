@@ -20,8 +20,8 @@ habitats = {
     "Ocean": {
         "temperature": 10,
         "humidity": 100,
-        "elevation": 0,
-        "terrestrial": 0,
+        "elevation": 1,
+        "terrestrial": 1,
         "aqueous": 100
     },
     "Forest": {
@@ -32,7 +32,7 @@ habitats = {
         "aqueous": 25
     },
     "Mountains": {
-        "temperature": 0,
+        "temperature": 1,
         "humidity": 60,
         "elevation": 100,
         "terrestrial": 90,
@@ -41,14 +41,14 @@ habitats = {
     "Lake": {
         "temperature": 10,
         "humidity": 100,
-        "elevation": 0,
-        "terrestrial": 0,
+        "elevation": 1,
+        "terrestrial": 1,
         "aqueous": 100
     },
     "Shore": {
         "temperature": 15,
         "humidity": 80,
-        "elevation": 0,
+        "elevation": 1,
         "terrestrial": 40,
         "aqueous": 60
     },

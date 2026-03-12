@@ -1,20 +1,28 @@
 class Animal:
-    def __init__(self, species, health):
+    def __init__(self, species, health, chosen_habitat):
         self.species = species
         self.health = health
+        self.chosen_habitat = chosen_habitat
+
+
 
 class animal_trait(Animal):
-    def __init__(self, species, health, traits=None):
-        super().__init__(species, health)
+    def __init__(self, species, health, chosen_habitat, traits = None, habitat=None):
+        super().__init__(species, health, chosen_habitat)
         # ensure each instance has its own traits list (default empty list)
         self.traits = traits if traits is not None else []
+        self.habitat = habitat if traits is not None else None
+
+    def __str__(self):
+        return f"Species: {self.species}, Health: {self.health}, Traits: {self.traits}, Thriving habitat: {self.chosen_habitat}"
+
 
 # ---- Hierarchical traits ----
 traits = {
     "respiratory system": {
-        "gills": {"temperature": 10, "humidity": 100, "elevation": 5, "terrestrial": 0, "aqueous": 100},
+        "gills": {"temperature": 10, "humidity": 100, "elevation": 5, "terrestrial": 1, "aqueous": 100},
         "lungs": {"temperature": 15, "humidity": 50, "elevation": 50, "terrestrial": 75, "aqueous": 25},
-        "tracheal system": {"temperature": 35, "humidity": 40, "elevation": 10, "terrestrial": 100, "aqueous": 0},
+        "tracheal system": {"temperature": 35, "humidity": 40, "elevation": 10, "terrestrial": 100, "aqueous": 1},
         "cutaneous respiration": {"temperature": 15, "humidity": 90, "elevation": 30, "terrestrial": 40, "aqueous": 60},
     },
 
@@ -31,21 +39,21 @@ traits = {
 
     "skeleton": {
         "bone internal": {"temperature": 10, "humidity": 50, "elevation": 70, "terrestrial": 80, "aqueous": 20},
-        "bone exoskeleton": {"temperature": 30, "humidity": 40, "elevation": 20, "terrestrial": 100, "aqueous": 0},
-        "cartilage": {"temperature": 12, "humidity": 100, "elevation": 5, "terrestrial": 0, "aqueous": 100},
+        "bone exoskeleton": {"temperature": 30, "humidity": 40, "elevation": 20, "terrestrial": 100, "aqueous": 1},
+        "cartilage": {"temperature": 12, "humidity": 100, "elevation": 5, "terrestrial": 1, "aqueous": 100},
         "hydrostatic skeleton": {"temperature": 18, "humidity": 90, "elevation": 10, "terrestrial": 30, "aqueous": 70},
     },
 
     "skin": {
         "scales": {"temperature": 30, "humidity": 30, "elevation": 20, "terrestrial": 80, "aqueous": 20},
-        "fur": {"temperature": 0, "humidity": 50, "elevation": 80, "terrestrial": 90, "aqueous": 10},
+        "fur": {"temperature": 1, "humidity": 50, "elevation": 80, "terrestrial": 90, "aqueous": 10},
         "skin": {"temperature": 18, "humidity": 80, "elevation": 40, "terrestrial": 60, "aqueous": 40},
         "feathers": {"temperature": 5, "humidity": 50, "elevation": 70, "terrestrial": 70, "aqueous": 30},
     },
 
     "limbs type": {
-        "legs": {"temperature": 15, "humidity": 50, "elevation": 60, "terrestrial": 100, "aqueous": 0},
-        "fins": {"temperature": 10, "humidity": 100, "elevation": 5, "terrestrial": 0, "aqueous": 100},
+        "legs": {"temperature": 15, "humidity": 50, "elevation": 60, "terrestrial": 100, "aqueous": 1},
+        "fins": {"temperature": 10, "humidity": 100, "elevation": 5, "terrestrial": 1, "aqueous": 100},
         "wings": {"temperature": 5, "humidity": 50, "elevation": 80, "terrestrial": 60, "aqueous": 40},
         "tentacles": {"temperature": 12, "humidity": 90, "elevation": 5, "terrestrial": 10, "aqueous": 90},
         "none": {"temperature": 18, "humidity": 85, "elevation": 15, "terrestrial": 40, "aqueous": 60},
@@ -61,7 +69,7 @@ traits = {
         "small": {"temperature": 25, "humidity": 60, "elevation": 40, "terrestrial": 70, "aqueous": 30},
         "medium": {"temperature": 15, "humidity": 55, "elevation": 50, "terrestrial": 75, "aqueous": 25},
         "large": {"temperature": 5, "humidity": 50, "elevation": 70, "terrestrial": 85, "aqueous": 15},
-        "gigantic": {"temperature": 0, "humidity": 80, "elevation": 10, "terrestrial": 10, "aqueous": 90},
+        "gigantic": {"temperature": 1, "humidity": 80, "elevation": 10, "terrestrial": 10, "aqueous": 90},
     }
 }
 

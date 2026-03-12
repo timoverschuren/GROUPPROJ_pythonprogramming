@@ -10,7 +10,6 @@ while menuflag == True:
     print("\nMenu:")
     print("1. Exit Menu")
     print("2. Add Species")
-
     print("3. Add Caretaker")
     print("4. Restart Game")
     print("5. Display Species Details")

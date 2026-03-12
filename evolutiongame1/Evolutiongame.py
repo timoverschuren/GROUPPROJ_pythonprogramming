@@ -5,8 +5,12 @@ from class_habitat import *
 from evolutiongame_methods import *
 from player_history import *
 
+#main menu loop
+#controls the main game menu. Keeps running until the player chooses to exit
+
 menuflag = True
 while menuflag == True:
+    #display menu options available to player
     print("\nMenu:")
     print("1. Exit Menu")
     print("2. Add Species")

@@ -222,6 +222,11 @@ def assign_species_to_habitat():
         print("Invalid habitat name. Returning to menu.")
         return
     
+    # Check if choosing the same habitat as previous generation
+    if matched_habitat == selected_species.previous_habitat:
+        print("You must choose a different habitat than the previous generation.")
+        return
+    
     # Update the species' habitat attribute
     selected_species.habitat = matched_habitat
     print(f"{selected_species.species} is now assigned to habitat: {matched_habitat}.")
@@ -246,19 +251,21 @@ def restart_game():
     generation_counter = 0
     player_xp = 330
     print("Game restarted: species and caretakers cleared, generation reset, XP restored.")
-
 def iterate_generation():
     global generation_counter, player_xp
+    
     for x in species_list:
         if x.habitat is None:
             print(f"{x.species} is not assigned to a habitat. Assign all species to a habitat before iterating the generation.")
             return
         
-    for x in species_list:
-        if x.traits is None or len(x.traits) == 0:
-            print(f"{x.species} has no traits. Add traits to all species before iterating the generation.")
-            return
-    
+    for x in species_list[:]:  # Iterate over a copy of the list
+        if not x.traits:
+            x.health = 0
+            print(f"{x.species} has no traits and dies.")
+        
+    live_check()  # Check if any species died due to lack of traits before proceeding
+
     generation_counter += 1
     player_xp += 50
     print(f"Generation {generation_counter} has begun!")
@@ -271,6 +278,18 @@ def iterate_generation():
     if len(species_list) == 0:
         print("Youve lost! No species left to evolve.")           
         restart_game()
+        return
+
+    if generation_counter == 10:
+        print("Congratulations! You've reached generation 10 and won the game!")
+        restart_game()
+        return
+
+        # Force habitat reassignment every generation
+    print("Habitats have shifted! All species must be reassigned to new habitats before proceeding.")
+    for x in species_list:
+        x.previous_habitat = x.habitat
+        x.habitat = None
 
 def add_caretaker():
     if len(caretaker_list) >= 1:
@@ -329,34 +348,35 @@ def display_species_details():
 #Health system methods.
 #compare animal traits with habitat attributes to calculate if animal loses "health" or not, and if it does, 10 health is lost. If health reaches 0, the species is removed from the species list.
 def health_system(animal):
-    healthloss = 10
+    healthloss = 30
 
-    temp_score = (habitats[animal.habitat]["temperature"])-habitats[animal.chosen_habitat]["temperature"]
-    temp_loss = (5 - healthloss * (1 - temp_score))
+    temp_score = abs(habitats[animal.habitat]["temperature"]-(habitats[animal.chosen_habitat]["temperature"]+ traits[animal.traits[0][0]][animal.traits[0][1]]["temperature"])/2)
+    temp_loss = healthloss - 0.2 * temp_score
     animal.health -= temp_loss
     if temp_loss > 0:
         print(f"{animal.species} lost {temp_loss} health due to the temperature.")
     else:
         print(f"{animal.species} gained {abs(temp_loss)} health due to the temperature.")
 
-    hum_score = habitats[animal.habitat]["humidity"]-habitats[animal.chosen_habitat]["humidity"]
-    hum_loss = (5 - healthloss * (1 - hum_score))
+
+    hum_score = abs(habitats[animal.habitat]["humidity"]-(habitats[animal.chosen_habitat]["humidity"]+ traits[animal.traits[0][0]][animal.traits[0][1]]["humidity"])/2)
+    hum_loss = healthloss - 0.2 * hum_score
     animal.health -= hum_loss
     if hum_loss > 0:
         print(f"{animal.species} lost {hum_loss} health due to the humidity.")
     else:
         print(f"{animal.species} gained {abs(hum_loss)} health due to the humidity.")
 
-    elev_score = habitats[animal.habitat]["elevation"]-habitats[animal.chosen_habitat]["elevation"]
-    elev_loss = (5 - healthloss * (1 - elev_score))
+    elev_score = abs(habitats[animal.habitat]["elevation"]-(habitats[animal.chosen_habitat]["elevation"]+ traits[animal.traits[0][0]][animal.traits[0][1]]["elevation"])/2)
+    elev_loss = healthloss - 0.2 * elev_score
     animal.health -= elev_loss
     if elev_loss > 0:
         print(f"{animal.species} lost {elev_loss} health due to the elevation.")
     else:
         print(f"{animal.species} gained {abs(elev_loss)} health due to the elevation.")
 
-    terr_score = habitats[animal.habitat]["terrestrial"]-habitats[animal.chosen_habitat]["terrestrial"]
-    terr_loss = (5 - healthloss * (1 - terr_score))
+    terr_score = abs(habitats[animal.habitat]["terrestrial"]-(habitats[animal.chosen_habitat]["terrestrial"]+ traits[animal.traits[0][0]][animal.traits[0][1]]["terrestrial"])/2)
+    terr_loss = healthloss - 0.2 * terr_score
     animal.health -= terr_loss
     if terr_loss > 0:
         print(f"{animal.species} lost {terr_loss} health due to the terrestrial factor.")
@@ -375,6 +395,8 @@ def check_xp():
     return player_xp
 
 def live_check():
+
+
     dead_species = []
     for x in species_list[:]:  # Iterate over a copy of the list
         if x.health <= 0:
@@ -384,3 +406,6 @@ def live_check():
     # Print all dead species after removal
     for name in dead_species:
         print(f"Species {name} died")
+
+def kill_species(x):
+  species_list.remove(x)  # Remove from the actual list

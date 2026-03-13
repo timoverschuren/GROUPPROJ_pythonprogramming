@@ -12,6 +12,7 @@ class animal_trait(Animal):
         # ensure each instance has its own traits list (default empty list)
         self.traits = traits if traits is not None else []
         self.habitat = habitat if traits is not None else None
+        self.previous_habitat = None    
 
     def __str__(self):
         return f"Species: {self.species}, Health: {self.health}, Traits: {self.traits}, Thriving habitat: {self.chosen_habitat}"

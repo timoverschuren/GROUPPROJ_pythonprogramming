@@ -1,4 +1,4 @@
-import player_history
+from player_history import *
 from class_caretaker import *
 from class_animals import *
 from class_habitat import *

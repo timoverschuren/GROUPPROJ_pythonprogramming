@@ -31,21 +31,6 @@ def add_species():
     new_species.habitat = None
     species_list.append(new_species)
 
-    # per-species habitat selection
-    print("\nSelect a home habitat for this species. This is where the species will thrive best. Available habitats:")
-    for h in habitats:
-        print(f" - {h}")
-
-    while True:
-        h_choice = input("Enter habitat name: ").strip().lower()
-        chosen = next((h for h in habitats if h.lower() == h_choice), None)
-        if chosen is None:
-            print("Invalid habitat name. Try again.")
-            continue
-        new_species.chosen_habitat = chosen
-        print(f"{new_species.species} habitat set to: {new_species.chosen_habitat}")
-        break
-
     # deduct cost from global XP and inform player
     player_xp -= xp_req
     print(f"{xp_req} XP spent. You now have {player_xp} XP remaining.")

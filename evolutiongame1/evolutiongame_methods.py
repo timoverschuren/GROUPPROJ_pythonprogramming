@@ -4,12 +4,14 @@ import player_history as ph
 from class_habitat import *
 from player_history import refresh_screen
 
+# These variables keep track of the overall game state, are global in order to be accessed by multiple functions
 generation_counter = 0 # Global variable to track generations; reset on game restart
 player_xp = 330 # Global variable to track player XP; reset on game restart
 species_list = [] # Global variable to track species; reset on game restart
 caretaker_list = [] # Global variable to track caretakers; reset on game restart
 
 def add_species():
+    # Add a new species to the game, with a cost in XP. The player must confirm the action and have enough XP to proceed
     global player_xp
     xp_req = 100
     if len(species_list) >= 4:
@@ -31,13 +33,14 @@ def add_species():
     new_species.habitat = None
     species_list.append(new_species)
 
-    # deduct cost from global XP and inform player
+    # Deduct cost from global XP and inform player
     player_xp -= xp_req
     print(f"{xp_req} XP spent. You now have {player_xp} XP remaining.")
 
     return player_xp
 
 def add_traits():
+    # Add a trait to an existing species, with a cost in XP. The player must select a species, choose a trait category and specific trait, and confirm the action before the trait is added and XP is deducted
     global player_xp
     xp_req = 10
 
@@ -169,6 +172,7 @@ def render_visuals_for_species():
         print(f"(Note) Could not render visuals: {e}")
 
 def assign_species_to_habitat():
+    # Allow user to assign a species to a habitat, which will affect its health in the next generation. The user must select a species and a habitat from available options, and the species' habitat attribute will be updated accordingly.
     if not species_list:
         print("No species available to assign.")
         return
@@ -217,6 +221,7 @@ def assign_species_to_habitat():
     print(f"{selected_species.species} is now assigned to habitat: {matched_habitat}.")
 
 def check_assigned_habitats():
+    # Display the current habitat assignments for all species. If a species has no habitat assigned, indicate that as well.
     if not species_list:
         print("No species available.")
         return
@@ -236,7 +241,9 @@ def restart_game():
     generation_counter = 0
     player_xp = 330
     print("Game restarted: species and caretakers cleared, generation reset, XP restored.")
+
 def iterate_generation():
+    # Progress the game by one generation, applying health changes based on habitat suitability and traits. The player gains XP for surviving the generation, but must ensure all species have traits and habitats assigned before proceeding. If any species' health drops to 0 or below, they are removed from the game.
     global generation_counter, player_xp
     
     for x in species_list:

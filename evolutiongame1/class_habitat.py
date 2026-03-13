@@ -1,5 +1,6 @@
 
 class Habitat:
+    # Base class for habitats, with attributes that define the conditions of the habitat
     def __init__(self, temperature, humidity, elevation, terrestrial, aqueous):
         self.temperature = temperature
         self.humidity = humidity
@@ -10,6 +11,7 @@ class Habitat:
 
 # humidity goes 0..100; elevation/temperature and terrestrial/aqueous are real numbers.
 habitats = {
+    # Each habitat has specific attributes that define its conditions and suitability for different species
     "Desert": {
         "temperature": 40,
         "humidity": 10,
@@ -55,6 +57,7 @@ habitats = {
 }
 
 _ranges = {
+    # Normalization ranges for habitat attributes, used to scale raw values into a 0-1 range for comparison and visualization
     "temperature": (0.0,   50.0),   # °C
     "humidity":    (0.0,   100.0),  # %
     "elevation":   (0.0,   100.0), # meters

@@ -1,4 +1,6 @@
 class Animal:
+    # Base class for animals, with basic attributes like species, health, and chosen habitat
+    # Runs automatically when a new Animal object is created
     def __init__(self, species, health, chosen_habitat):
         self.species = species
         self.health = health
@@ -7,8 +9,9 @@ class Animal:
 
 
 class animal_trait(Animal):
+    # Subclass of Animal that includes all the chosen traits and habitat assignment
     def __init__(self, species, health, chosen_habitat, traits = None, habitat=None):
-        super().__init__(species, health, chosen_habitat)
+        super().__init__(species, health, chosen_habitat) # Calls parent class to use its attributes
         # ensure each instance has its own traits list (default empty list)
         self.traits = traits if traits is not None else []
         self.habitat = habitat if traits is not None else None
@@ -20,6 +23,8 @@ class animal_trait(Animal):
 
 # ---- Hierarchical traits ----
 traits = {
+    # Each trait has a set of attributes that influence the species' affinity to different habitats and conditions
+    # Set in a hierchal way : category -> specific trait -> environmental values
     "respiratory system": {
         "gills": {"temperature": 10, "humidity": 100, "elevation": 5, "terrestrial": 1, "aqueous": 100},
         "lungs": {"temperature": 15, "humidity": 50, "elevation": 50, "terrestrial": 75, "aqueous": 25},
@@ -100,12 +105,12 @@ def trait_to_curve(trait_tuple):
 
     cat_name, trait_name = trait_tuple
 
-    # match category (case-insensitive)
+    # Match category (case-insensitive)
     category = next((c for c in traits if c.lower() == cat_name.lower()), None)
     if category is None:
         return []
 
-    # match trait
+    # Match trait
     trait = next((t for t in traits[category] if t.lower() == trait_name.lower()), None)
     if trait is None:
         return []
@@ -120,7 +125,7 @@ def trait_to_curve(trait_tuple):
         _norm(attrs["aqueous"], *_ranges["aqueous"]),
     ]
 
-    # cumulative mean
+    # Cumulative mean
     curve = vec[:]  # Use raw normalized 5 factors
 
     return curve
